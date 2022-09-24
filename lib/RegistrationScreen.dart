@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-class RegistraionFrom extends StatefulWidget {
-  const RegistraionFrom({Key? key}) : super(key: key);
+class RegistrationForm extends StatefulWidget {
+  const RegistrationForm({Key? key}) : super(key: key);
 
   @override
-  State<RegistraionFrom> createState() => _RegistraionFromState();
+  State<RegistrationForm> createState() => _RegistrationFormState();
 }
 
-class _RegistraionFromState extends State<RegistraionFrom> {
-  bool _isHidden = true;
+class _RegistrationFormState extends State<RegistrationForm> {
+  bool _passwordHidden = true;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class _RegistraionFromState extends State<RegistraionFrom> {
                     Padding(
                       padding: EdgeInsets.all(10),
                       child: TextField(
-                        obscureText: _isHidden,
+                        obscureText: _passwordHidden,
                         decoration: InputDecoration(
                             prefixIcon: Icon(Icons.lock),
                             border: OutlineInputBorder(),
@@ -48,7 +48,7 @@ class _RegistraionFromState extends State<RegistraionFrom> {
                             suffix: InkWell(
                                 onTap: _togglePasswordView,
                                 child: Icon(
-                                  _isHidden
+                                  _passwordHidden
                                       ? Icons.visibility
                                       : Icons.visibility_off,
                                 )
@@ -95,7 +95,7 @@ class _RegistraionFromState extends State<RegistraionFrom> {
   }
   void _togglePasswordView() {
     setState(() {
-      _isHidden = !_isHidden;
+      _passwordHidden = !_passwordHidden;
     });
   }
 }

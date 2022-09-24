@@ -1,94 +1,213 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MyLogin extends StatefulWidget {
+  const MyLogin({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
   @override
-  _MyLoginState createState() => _MyLoginState();
+  State<MyLogin> createState() => _MyLoginState();
 }
 
 class _MyLoginState extends State<MyLogin> {
-  bool _isHidden = true;
+  static const Color primaryColor = Color(0xFF13B5A2);
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // Create storage
+  final _storage = const FlutterSecureStorage();
+
+  final TextEditingController _usernameController =
+  TextEditingController(text: "");
+  final TextEditingController _passwordController =
+  TextEditingController(text: "");
+
+  bool passwordHidden = true;
+  bool _savePassword = true;
+
+  // Read values
+  Future<void> _readFromStorage() async {
+    _usernameController.text = await _storage.read(key: "KEY_USERNAME") ?? '';
+    _passwordController.text = await _storage.read(key: "KEY_PASSWORD") ?? '';
+  }
+
+  _onFormSubmit() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      if (_savePassword) {
+        // Write values
+        await _storage.write(key: "KEY_USERNAME", value: _usernameController.text);
+        await _storage.write(key: "KEY_PASSWORD", value: _passwordController.text);
+      }
+    }
+  }
+
+  _onForgotPassword() {}
+
+
+  @override
+  void initState() {
+    super.initState();
+    _readFromStorage();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    //email text field
+    var size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Colors.white,
-        body: Center(
-          child: Padding(
-              padding: EdgeInsets.all(15),
-              child: SingleChildScrollView(
+      key: _scaffoldKey,
+      body: Center(
+      child:SingleChildScrollView(
+        child: Container(
+          width: size.width,
+          padding: EdgeInsets.all(size.width - size.width * .95),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                height: 300,
+                child: Image.asset('assets/logo.jpg',
+                    fit:BoxFit.contain
+                ),
+              ),
+              SizedBox(
+                height: size.height * .01,
+              ),
+              Form(
+                key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 200,
-                      child: Image.asset('assets/logo.jpg',
-                      fit:BoxFit.contain
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(15),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.account_box),
-                          border: OutlineInputBorder(),
-                          labelText: 'User Name',
-                          hintText: 'Enter Your Name',
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(15),
-                      child: TextField(
-                        obscureText: _isHidden,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.lock),
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
-                          hintText: 'Enter Password',
-                            suffix: InkWell(
-                                onTap: _togglePasswordView,
-                               child: Icon(
-                                 _isHidden
-                                     ? Icons.visibility
-                                     : Icons.visibility_off,
-                               )
-                            )
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Text('Forget password?'),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.account_box),
+                        border: OutlineInputBorder(),
+                        hintText: 'Enter Your Name',
+                         ),
+                      controller: _usernameController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Required field';
+                        }
+                        return null;
+                      },
+                      textInputAction: TextInputAction.next,
+                      textCapitalization: TextCapitalization.none,
+                      keyboardType: TextInputType.emailAddress,
                     ),
                     SizedBox(
-                      width: 330.0,
-                      height: 50.0,
-                      child: ElevatedButton(
-                        // padding: const EdgeInsets.fromLTRB(20,15,20,15),
-                        // color: Colors.blue,
-                        child: Text('LOGIN'),
-                        onPressed: (){},
-                      ),
+                      height: size.height * .02,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Text('Not a Member ? Click here to Signup'),
+                    TextFormField(
+                      textInputAction: TextInputAction.done,
+                      validator: (value) {
+                        return value!.isEmpty ? "Required field" : null;
+                      },
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock),
+                        border: OutlineInputBorder(),
+                        hintText: 'Password',
+                        labelStyle: const TextStyle(color: Color(0xFF95989A)),
+                        suffixIcon: InkWell(
+                          onTap: () {
+                            setState(() {
+                              passwordHidden = !passwordHidden;
+                            });
+                          },
+                          child: Icon(
+                            passwordHidden
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: const Color(0xff747881),
+                            size: 23,
+                          ),
+                        ),
+                      ),
+                      controller: _passwordController,
+                      obscureText: passwordHidden,
+                      enableSuggestions: false,
+                      toolbarOptions: const ToolbarOptions(
+                        copy: false,
+                        paste: false,
+                        cut: false,
+                        selectAll: false,
+                        //by default all are disabled 'false'
+                      ),
                     ),
                   ],
                 ),
-              )
+              ),
+              SizedBox(
+                height: size.height * .02,
+              ),
+              CheckboxListTile(
+                value: _savePassword,
+                onChanged: (bool? newValue) {
+                  setState(() {
+                    _savePassword = newValue!;
+                  });
+                },
+                title: const Text("Remember me"),
+              ),
+              SizedBox(
+                height: size.height * .02,
+              ),
+              SizedBox(
+                width: 350.0,
+                height: 60.0,
+                child: ElevatedButton(
+                  onPressed: _onFormSubmit,
+                  child: const Text("LOGIN",
+                      style: TextStyle(color: Colors.white, fontSize: 22,fontWeight: FontWeight.bold),
+                ),
+                ),
+              ),
+              SizedBox(
+                height: size.height * .015,
+              ),
+              Center(
+                child: InkWell(
+                  onTap: _onForgotPassword,
+                  child: const Text(
+                    "Forgot password?",
+                    style: TextStyle(color: Colors.black54, fontSize: 14,),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: size.height * .02,
+              ),
+              const Center(
+                child: Text.rich(
+                    TextSpan(
+                        text: 'Not a member?',
+                        children: <InlineSpan>[
+                          TextSpan(
+                            text: 'Click here to SignUp',
+                            style: TextStyle(color: Colors.deepOrangeAccent,fontSize: 16,fontWeight: FontWeight.bold),
+                          )
+                        ]
+                    )
+                ),
+              ),
+            ],
           ),
-        )
+        ),
+      ),
+    ),
     );
   }
-  void _togglePasswordView() {
-    setState(() {
-      _isHidden = !_isHidden;
-    });
-  }
 }
-
-

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartvisitingcard/LoginScreen.dart';
+import 'package:smartvisitingcard/QrCodeScreen.dart';
+
 
 void main(){
   runApp(MyApp());
@@ -14,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: MyLogin(),
+      home: MyLogin(title: 'Flutter Demo Home Page'),
     );
   }
 }
