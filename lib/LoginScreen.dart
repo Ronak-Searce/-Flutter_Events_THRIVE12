@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
+import 'package:smartvisitingcard/ScanScreen.dart';
+import 'package:smartvisitingcard/RegistrationScreen.dart';
 class MyLogin extends StatefulWidget {
   const MyLogin({Key? key, required this.title}) : super(key: key);
 
@@ -40,10 +41,25 @@ class _MyLoginState extends State<MyLogin> {
         await _storage.write(key: "KEY_USERNAME", value: _usernameController.text);
         await _storage.write(key: "KEY_PASSWORD", value: _passwordController.text);
       }
-    }
+     }
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => const ScanCode()),
+    // );
   }
 
-  _onForgotPassword() {}
+  _onForgotPassword() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ScanCode()),
+    );
+  }
+  _onSignUp() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RegistrationForm()),
+    );
+  }
 
 
   @override
@@ -64,7 +80,7 @@ class _MyLoginState extends State<MyLogin> {
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       key: _scaffoldKey,
       body: Center(
       child:SingleChildScrollView(
@@ -73,12 +89,12 @@ class _MyLoginState extends State<MyLogin> {
           padding: EdgeInsets.all(size.width - size.width * .95),
           alignment: Alignment.center,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               SizedBox(
-                height: 300,
-                child: Image.asset('assets/logo.jpg',
+                height: 150,
+                child: Image.asset('assets/logo.png',
                     fit:BoxFit.contain
                 ),
               ),
@@ -90,11 +106,30 @@ class _MyLoginState extends State<MyLogin> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Center(
+                      child: InkWell(
+                        onTap: _onForgotPassword,
+                        child: const Text(
+                          "THRIVE",
+                          style: TextStyle(color: Colors.blueAccent, fontSize: 30,fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: size.height * .02,
+                    ),
                     TextFormField(
                       decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.account_box),
-                        border: OutlineInputBorder(),
+                      prefixIcon: Icon(
+                          Icons.account_box,
+                          color: Colors.white,
+                      ),
+                        enabledBorder:const OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.grey, width: 2)
+                        ),
                         hintText: 'Enter Your Name',
+                        hintStyle: TextStyle(color: Colors.white)
                          ),
                       controller: _usernameController,
                       validator: (value) {
@@ -103,6 +138,7 @@ class _MyLoginState extends State<MyLogin> {
                         }
                         return null;
                       },
+                      style: TextStyle(color: Colors.white),
                       textInputAction: TextInputAction.next,
                       textCapitalization: TextCapitalization.none,
                       keyboardType: TextInputType.emailAddress,
@@ -116,10 +152,15 @@ class _MyLoginState extends State<MyLogin> {
                         return value!.isEmpty ? "Required field" : null;
                       },
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.lock),
-                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(
+                            Icons.lock,
+                            color: Colors.white,
+                        ),
+                        enabledBorder:const OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.grey, width: 2)
+                        ),
                         hintText: 'Password',
-                        labelStyle: const TextStyle(color: Color(0xFF95989A)),
+                          hintStyle: TextStyle(color: Colors.white),
                         suffixIcon: InkWell(
                           onTap: () {
                             setState(() {
@@ -145,6 +186,7 @@ class _MyLoginState extends State<MyLogin> {
                         selectAll: false,
                         //by default all are disabled 'false'
                       ),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
@@ -153,13 +195,15 @@ class _MyLoginState extends State<MyLogin> {
                 height: size.height * .02,
               ),
               CheckboxListTile(
+                side: const BorderSide(color: Colors.white),
                 value: _savePassword,
                 onChanged: (bool? newValue) {
                   setState(() {
                     _savePassword = newValue!;
                   });
                 },
-                title: const Text("Remember me"),
+                title: const Text("Remember me",
+                    style: TextStyle(color: Colors.white)),
               ),
               SizedBox(
                 height: size.height * .02,
@@ -182,7 +226,7 @@ class _MyLoginState extends State<MyLogin> {
                   onTap: _onForgotPassword,
                   child: const Text(
                     "Forgot password?",
-                    style: TextStyle(color: Colors.black54, fontSize: 14,),
+                    style: TextStyle(color: Colors.white, fontSize: 14,),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -191,16 +235,23 @@ class _MyLoginState extends State<MyLogin> {
                 height: size.height * .02,
               ),
               const Center(
-                child: Text.rich(
-                    TextSpan(
-                        text: 'Not a member?',
-                        children: <InlineSpan>[
-                          TextSpan(
-                            text: 'Click here to SignUp',
-                            style: TextStyle(color: Colors.deepOrangeAccent,fontSize: 16,fontWeight: FontWeight.bold),
-                          )
-                        ]
-                    )
+                child: Text(
+                  "You don't have an account?",
+                  style: TextStyle(color: Colors.white,fontSize: 14, ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(
+                height: size.height * .01,
+              ),
+              Center(
+                child: InkWell(
+                  onTap: _onSignUp,
+                  child: const Text(
+                    "Click here to SinUp",
+                    style: TextStyle( color: primaryColor,fontSize: 16, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ],

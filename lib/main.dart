@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartvisitingcard/LoginScreen.dart';
-import 'package:smartvisitingcard/QrCodeScreen.dart';
+import 'package:smartvisitingcard/QrCodeScan.dart';
+import 'package:smartvisitingcard/RegistrationScreen.dart';
 
 
 void main(){
@@ -14,9 +15,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'smart Visisting Card',
       theme: ThemeData(
-        primarySwatch: Colors.orange,
+        primarySwatch: Colors.blue,
       ),
-      home: MyLogin(title: 'Flutter Demo Home Page'),
+      // home: MyLogin(title: 'smart Visisting Card'),
+      home: MyLogin(title: 'smart Visisting Card'),
     );
   }
 }
